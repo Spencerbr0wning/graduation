@@ -468,7 +468,27 @@ footer span { color: var(--text-secondary); }
 .ripple-btn:hover .cursor-glow { opacity: 1; }
 .ripple-btn svg, .ripple-btn span, .ripple-btn > * { position: relative; z-index: 1; }
 .ripple-btn .cursor-glow, .ripple-btn .ripple { z-index: 0; }
-@media (max-width: 600px) { nav .links a:not(.venmo-nav) { display: none; } .hero-details { gap: 1.5rem; } .hero-details .hero-detail:nth-child(2) { display: none; } .form-row { flex-direction: column; } .sem { min-width: 80px; } }
+@media (max-width: 600px) {
+  nav .links a:not(.venmo-nav) { display: none; }
+  .hero-details { gap: 1.5rem; }
+  .hero-details .hero-detail:nth-child(2) { display: none; }
+  .form-row { flex-direction: column; }
+  /* Timeline — scrollable on mobile */
+  .roadmap { padding: 4rem 0 3rem; }
+  .roadmap-inner { padding: 0; overflow: hidden; }
+  .roadmap .tag, .roadmap h2, .roadmap-stats { padding: 0 1.5rem; }
+  .semester-track {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0.25rem 1.5rem 1.5rem;
+    gap: 0;
+  }
+  .semester-track::-webkit-scrollbar { display: none; }
+  .sem { min-width: 72px; flex-shrink: 0; }
+  .sem-label { font-size: 0.68rem; }
+  .sem-year { font-size: 0.62rem; }
+}
 </style>
 </head>
 <body>
