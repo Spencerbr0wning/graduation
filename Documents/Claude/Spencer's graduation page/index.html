@@ -474,15 +474,16 @@ footer span { color: var(--text-secondary); }
   .hero-details .hero-detail:nth-child(2) { display: none; }
   .form-row { flex-direction: column; }
   /* Timeline — scrollable on mobile */
-  .roadmap { padding: 4rem 0 3rem; }
-  .roadmap-inner { padding: 0; overflow: hidden; }
+  .roadmap { padding: 4rem 0 3rem; overflow: hidden; }
+  .roadmap-inner { padding: 0; }
   .roadmap .tag, .roadmap h2, .roadmap-stats { padding: 0 1.5rem; }
   .semester-track {
-    overflow-x: auto;
+    overflow-x: scroll;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    padding: 0.25rem 1.5rem 1.5rem;
+    padding: 0.5rem 1.5rem 1.5rem;
     gap: 0;
+    width: 100%;
   }
   .semester-track::-webkit-scrollbar { display: none; }
   .sem { min-width: 72px; flex-shrink: 0; }
