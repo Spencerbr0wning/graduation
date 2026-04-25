@@ -124,17 +124,41 @@ nav {
   background: rgba(9,9,11,0.7);
   backdrop-filter: blur(20px) saturate(1.2);
   border-bottom: 1px solid var(--border);
-  transition: all 0.3s ease;
+  transition: padding 0.4s cubic-bezier(0.16,1,0.3,1),
+              top 0.4s cubic-bezier(0.16,1,0.3,1),
+              left 0.4s cubic-bezier(0.16,1,0.3,1),
+              right 0.4s cubic-bezier(0.16,1,0.3,1),
+              border-radius 0.4s cubic-bezier(0.16,1,0.3,1),
+              background 0.4s ease,
+              box-shadow 0.4s ease,
+              border-color 0.4s ease;
 }
-nav .name { font-size: 0.85rem; font-weight: 600; letter-spacing: -0.01em; }
-nav .links { display: flex; gap: 2rem; align-items: center; }
-nav .links a { font-size: 0.8rem; color: var(--text-secondary); text-decoration: none; transition: color 0.2s; }
+nav.scrolled {
+  top: 0.75rem;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  width: auto;
+  padding: 0.55rem 1.25rem;
+  border-radius: 999px;
+  background: rgba(18,18,22,0.85);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+nav .name { font-size: 0.85rem; font-weight: 600; letter-spacing: -0.01em; transition: font-size 0.4s ease, opacity 0.3s ease; }
+nav.scrolled .name { font-size: 0.78rem; }
+nav .links { display: flex; gap: 2rem; align-items: center; transition: gap 0.4s ease; }
+nav.scrolled .links { gap: 1.25rem; }
+nav .links a { font-size: 0.8rem; color: var(--text-secondary); text-decoration: none; transition: color 0.2s, font-size 0.4s ease; }
+nav.scrolled .links a { font-size: 0.75rem; }
 nav .links a:hover { color: var(--text); }
 nav .venmo-nav {
   font-size: 0.78rem; font-weight: 500; color: var(--text) !important;
   background: var(--bg-elevated); padding: 0.45rem 1rem; border-radius: 8px;
   border: 1px solid var(--border); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
+nav.scrolled .venmo-nav { padding: 0.35rem 0.85rem; font-size: 0.72rem; }
 nav .venmo-nav:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); transform: translateY(-1px); }
 .hero {
   min-height: 100vh; display: flex; align-items: center; justify-content: center;
@@ -859,10 +883,10 @@ function addComment() {
 }
 function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 renderComments();
+const navEl = document.querySelector('nav');
 window.addEventListener('scroll', () => {
-  const nav = document.querySelector('nav');
-  nav.style.borderBottomColor = window.scrollY > 100 ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.04)';
-});
+  navEl.classList.toggle('scrolled', window.scrollY > 80);
+}, { passive: true });
 // All buttons — cursor glow + click ripple
 document.querySelectorAll('.ripple-btn').forEach(btn => {
   const glow = btn.querySelector('.cursor-glow');
