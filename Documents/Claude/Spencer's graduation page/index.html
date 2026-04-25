@@ -283,16 +283,21 @@ nav .venmo-nav:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--a
   font-family: 'Instrument Serif', serif; font-size: 4rem; font-weight: 400;
   color: var(--text-tertiary); opacity: 0.15; line-height: 1; pointer-events: none;
 }
-/* ============ WHAT'S NEXT — PAGE FLIP CARDS ============ */
-.whats-next { padding: 8rem 2rem; position: relative; overflow: hidden; }
-.whats-next::before {
+/* ============ WHAT'S NEXT — SCROLL-DRIVEN PAGE FLIP ============ */
+.whats-next { position: relative; height: 280vh; }
+.whats-next-sticky {
+  position: sticky; top: 0; height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.whats-next-sticky::before {
   content: ''; position: absolute; width: 0; height: 0; top: 50%; left: 50%;
   transform: translate(-50%, -50%); border-radius: 50%;
   background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%);
   transition: width 1.8s cubic-bezier(0.16,1,0.3,1), height 1.8s cubic-bezier(0.16,1,0.3,1);
   pointer-events: none; z-index: 0;
 }
-.whats-next.in-view::before { width: 1400px; height: 1400px; }
+.whats-next.in-view .whats-next-sticky::before { width: 1400px; height: 1400px; }
 .magic-sparkles { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
 .sparkle {
   position: absolute; border-radius: 50%; background: var(--accent); opacity: 0;
@@ -304,7 +309,7 @@ nav .venmo-nav:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--a
   50%  { opacity: 0.5; }
   100% { opacity: 0; transform: scale(0.5) translateY(-80px); }
 }
-.whats-next-inner { max-width: 980px; margin: 0 auto; position: relative; z-index: 1; }
+.whats-next-inner { max-width: 980px; margin: 0 auto; padding: 2rem; position: relative; z-index: 1; width: 100%; }
 .wn-tag {
   font-size: 0.68rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
   color: var(--accent); margin-bottom: 1rem; text-align: center;
@@ -321,22 +326,25 @@ nav .venmo-nav:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--a
               filter 1s cubic-bezier(0.16,1,0.3,1) 0.25s;
 }
 .whats-next.in-view .wn-heading { opacity: 1; transform: translateY(0); filter: blur(0); }
-/* Page-flip card grid */
+/* Scroll-driven flip cards */
 .flip-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-@keyframes pageFlipIn {
-  0%   { opacity: 0; transform: perspective(900px) translateX(90px) rotateY(-40deg); filter: blur(4px); }
-  100% { opacity: 1; transform: perspective(900px) translateX(0) rotateY(0deg); filter: blur(0); }
-}
 .flip-card {
   background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 16px;
   padding: 2.5rem 2rem; display: flex; flex-direction: column;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
+  opacity: 0;
+  transform: perspective(1000px) translateX(120px) rotateY(-50deg);
+  filter: blur(4px);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.3s ease, box-shadow 0.3s ease;
+}
+.flip-card.card-flipped {
+  opacity: 1;
+  transform: perspective(1000px) translateX(0) rotateY(0deg);
+  filter: blur(0);
 }
 .flip-card:hover { background: var(--bg-card); box-shadow: 0 12px 48px rgba(0,0,0,0.35); }
-.whats-next.in-view .flip-card { animation: pageFlipIn 1s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.whats-next.in-view .flip-card:nth-child(1) { animation-delay: 0.3s; }
-.whats-next.in-view .flip-card:nth-child(2) { animation-delay: 0.55s; }
-.whats-next.in-view .flip-card:nth-child(3) { animation-delay: 0.8s; }
 .flip-card-num {
   font-family: 'Instrument Serif', serif; font-size: 2.8rem;
   color: var(--accent); line-height: 1; margin-bottom: 1.2rem; opacity: 0.45;
@@ -352,7 +360,13 @@ nav .venmo-nav:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--a
   color: var(--accent); background: var(--accent-subtle); border: 1px solid rgba(59,130,246,0.15);
   align-self: flex-start;
 }
-@media (max-width: 700px) { .flip-cards { grid-template-columns: 1fr; gap: 1rem; } }
+/* Mobile: no sticky, all cards always visible */
+@media (max-width: 700px) {
+  .whats-next { height: auto; }
+  .whats-next-sticky { position: relative; height: auto; display: block; padding: 5rem 1.5rem; }
+  .flip-cards { grid-template-columns: 1fr; gap: 1rem; }
+  .flip-card { opacity: 1 !important; transform: none !important; filter: none !important; }
+}
 @media (min-width: 701px) and (max-width: 1000px) { .flip-cards { grid-template-columns: repeat(2, 1fr); } }
 .congrats { padding: 6rem 2rem; }
 .congrats-inner { max-width: 600px; margin: 0 auto; }
@@ -620,28 +634,30 @@ footer span { color: var(--text-secondary); }
 </section>
 <div class="section-divider"></div>
 <section class="whats-next" id="next">
-  <div class="magic-sparkles" id="magicSparkles"></div>
-  <div class="whats-next-inner">
-    <div class="wn-tag">Looking ahead</div>
-    <h2 class="wn-heading">What’s next for Spencer?</h2>
-    <div class="flip-cards">
-      <div class="flip-card">
-        <div class="flip-card-num">01</div>
-        <h3>Continue Building Vuely</h3>
-        <p>Spencer is the co-founder of <a href="https://vuely.co" target="_blank">Vuely.co</a>, a platform helping sign companies close more deals faster by streamlining their entire workflow: checking city codes, generating mock-ups, bidding jobs, and building proposals end to end.</p>
-        <div class="flip-card-tag">Co-Founder</div>
-      </div>
-      <div class="flip-card">
-        <div class="flip-card-num">02</div>
-        <h3>Master’s in CS Innovation</h3>
-        <p>Starting a <strong>Master’s in Computer Science Innovation</strong> through the Fellowship program, a one-year graduate degree focused on pushing the boundaries of technology and entrepreneurship.</p>
-        <div class="flip-card-tag">Starting May 2026</div>
-      </div>
-      <div class="flip-card">
-        <div class="flip-card-num">03</div>
-        <h3>Starting a Family</h3>
-        <p>McKayla and Spencer have plans to start their next adventure of beginning a family. This is something McKayla is especially excited for.</p>
-        <div class="flip-card-tag">With McKayla</div>
+  <div class="whats-next-sticky">
+    <div class="magic-sparkles" id="magicSparkles"></div>
+    <div class="whats-next-inner">
+      <div class="wn-tag">Looking ahead</div>
+      <h2 class="wn-heading">What’s next for Spencer?</h2>
+      <div class="flip-cards">
+        <div class="flip-card">
+          <div class="flip-card-num">01</div>
+          <h3>Continue Building Vuely</h3>
+          <p>Spencer is the co-founder of <a href="https://vuely.co" target="_blank">Vuely.co</a>, a platform helping sign companies close more deals faster by streamlining their entire workflow: checking city codes, generating mock-ups, bidding jobs, and building proposals end to end.</p>
+          <div class="flip-card-tag">Co-Founder</div>
+        </div>
+        <div class="flip-card">
+          <div class="flip-card-num">02</div>
+          <h3>Master’s in CS Innovation</h3>
+          <p>Starting a <strong>Master’s in Computer Science Innovation</strong> through the Fellowship program, a one-year graduate degree focused on pushing the boundaries of technology and entrepreneurship.</p>
+          <div class="flip-card-tag">Starting May 2026</div>
+        </div>
+        <div class="flip-card">
+          <div class="flip-card-num">03</div>
+          <h3>Starting a Family</h3>
+          <p>McKayla and Spencer have plans to start their next adventure of beginning a family. This is something McKayla is especially excited for.</p>
+          <div class="flip-card-tag">With McKayla</div>
+        </div>
       </div>
     </div>
   </div>
@@ -714,26 +730,33 @@ function spawnSparkles() {
 
 const sectionObs = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('in-view');
-      if (entry.target === whatsNext) spawnSparkles();
-    }
+    if (entry.isIntersecting) entry.target.classList.add('in-view');
   });
 }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 document.querySelectorAll('.page-section, .section-divider').forEach(el => sectionObs.observe(el));
-if (whatsNext) sectionObs.observe(whatsNext);
 
-// Backup: trigger whats-next on scroll and on load in case observer misses
-function checkWhatsNext() {
-  if (!whatsNext || whatsNext.classList.contains('in-view')) return;
-  const r = whatsNext.getBoundingClientRect();
-  if (r.top < window.innerHeight * 0.95 && r.bottom > 0) {
-    whatsNext.classList.add('in-view');
-    spawnSparkles();
-  }
+const flipCards = document.querySelectorAll('.flip-card');
+let sparkledOnce = false;
+
+function driveFlipCards() {
+  if (!whatsNext) return;
+  const rect = whatsNext.getBoundingClientRect();
+  if (rect.top < window.innerHeight * 0.85) whatsNext.classList.add('in-view');
+  const scrolled = -rect.top;
+  if (scrolled < 0 || flipCards.length === 0) return;
+  const usable = Math.max(1, rect.height - window.innerHeight);
+  const progress = Math.min(1, scrolled / usable);
+  const thresholds = [0.05, 0.38, 0.68];
+  flipCards.forEach((card, i) => {
+    if (progress >= thresholds[i] && !card.classList.contains('card-flipped')) {
+      card.classList.add('card-flipped');
+      if (!sparkledOnce) { spawnSparkles(); sparkledOnce = true; }
+    }
+  });
 }
-window.addEventListener('scroll', checkWhatsNext, { passive: true });
-window.addEventListener('load', () => { checkWhatsNext(); setTimeout(checkWhatsNext, 500); });
+
+window.addEventListener('scroll', driveFlipCards, { passive: true });
+window.addEventListener('load', driveFlipCards);
 
 // 4. Scroll-driven semester timeline
 const semTrack = document.getElementById('semesterTrack');
