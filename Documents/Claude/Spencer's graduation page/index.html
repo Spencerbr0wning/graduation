@@ -164,6 +164,37 @@ nav .venmo-nav {
 }
 nav.scrolled .venmo-nav { padding: 0.3rem 0.8rem; font-size: 0.72rem; }
 nav .venmo-nav:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); transform: translateY(-1px); }
+/* ============ CUSTOM CURSOR ============ */
+@media (pointer: fine) {
+  * { cursor: none !important; }
+  .cursor-dot {
+    position: fixed; pointer-events: none; z-index: 99999;
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 6px rgba(59,130,246,0.6);
+    transition: transform 0.1s ease, opacity 0.3s ease, width 0.2s ease, height 0.2s ease;
+    top: 0; left: 0; will-change: transform;
+  }
+  .cursor-ring {
+    position: fixed; pointer-events: none; z-index: 99998;
+    width: 30px; height: 30px; border-radius: 50%;
+    border: 1.5px solid rgba(59,130,246,0.55);
+    box-shadow: 0 0 10px rgba(59,130,246,0.2), inset 0 0 8px rgba(59,130,246,0.05);
+    top: 0; left: 0; will-change: transform;
+    transition: width 0.25s cubic-bezier(0.16,1,0.3,1),
+                height 0.25s cubic-bezier(0.16,1,0.3,1),
+                border-color 0.25s ease,
+                box-shadow 0.25s ease,
+                opacity 0.3s ease;
+  }
+  .cursor-dot.cursor-hover { width: 7px; height: 7px; background: rgba(59,130,246,0.9); box-shadow: 0 0 10px rgba(59,130,246,0.8); }
+  .cursor-ring.cursor-hover {
+    width: 44px; height: 44px;
+    border-color: rgba(59,130,246,0.75);
+    box-shadow: 0 0 18px rgba(59,130,246,0.35), inset 0 0 12px rgba(59,130,246,0.08);
+  }
+  .cursor-dot.cursor-hidden, .cursor-ring.cursor-hidden { opacity: 0; }
+}
 @media (max-width: 600px) {
   nav.scrolled { padding: 0.35rem 1rem; gap: 0.85rem; top: 0.5rem; }
   nav.scrolled .name { font-size: 0.72rem; }
@@ -539,6 +570,8 @@ footer span { color: var(--text-secondary); }
 </style>
 </head>
 <body>
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
 <nav>
   <div class="name">Spencer Browning</div>
   <div class="links">
@@ -916,6 +949,63 @@ document.querySelectorAll('.ripple-btn').forEach(btn => {
     ripple.addEventListener('animationend', () => ripple.remove());
   });
 });
+
+// ============ CUSTOM MAGNETIC CURSOR ============
+(function() {
+  const dot = document.getElementById('cursorDot');
+  const ring = document.getElementById('cursorRing');
+  if (!dot || !ring || window.matchMedia('(pointer: coarse)').matches) return;
+
+  let mx = -100, my = -100;   // raw mouse position
+  let rx = -100, ry = -100;   // smoothed ring position
+  const LERP = 0.13;
+
+  const magnetSelectors = 'a, button, .flip-card, .story-card, input, textarea';
+
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  document.addEventListener('mouseleave', () => { dot.classList.add('cursor-hidden'); ring.classList.add('cursor-hidden'); });
+  document.addEventListener('mouseenter', () => { dot.classList.remove('cursor-hidden'); ring.classList.remove('cursor-hidden'); });
+
+  // Hover state
+  document.addEventListener('mouseover', e => {
+    if (e.target.closest('a, button, input, textarea, .flip-card')) {
+      dot.classList.add('cursor-hover'); ring.classList.add('cursor-hover');
+    }
+  });
+  document.addEventListener('mouseout', e => {
+    if (e.target.closest('a, button, input, textarea, .flip-card')) {
+      dot.classList.remove('cursor-hover'); ring.classList.remove('cursor-hover');
+    }
+  });
+
+  function tick() {
+    // Magnetic pull: ring drifts toward nearby interactive elements
+    let tx = mx, ty = my;
+    document.querySelectorAll(magnetSelectors).forEach(el => {
+      const r = el.getBoundingClientRect();
+      if (r.width === 0) return;
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      const dist = Math.hypot(mx - cx, my - cy);
+      const threshold = Math.max(r.width * 0.65, 60);
+      if (dist < threshold && dist > 0) {
+        const pull = Math.pow(1 - dist / threshold, 1.5) * 0.4;
+        tx += (cx - mx) * pull;
+        ty += (cy - my) * pull;
+      }
+    });
+
+    // Lerp ring toward (possibly pulled) target
+    rx += (tx - rx) * LERP;
+    ry += (ty - ry) * LERP;
+
+    dot.style.transform = `translate(${mx - 2.5}px, ${my - 2.5}px)`;
+    ring.style.transform = `translate(${rx - 15}px, ${ry - 15}px)`;
+
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
 </script>
 </body>
 </html>
