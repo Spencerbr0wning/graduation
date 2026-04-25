@@ -20,7 +20,7 @@
   --accent-glow: rgba(59,130,246,0.15);
   --accent-subtle: rgba(59,130,246,0.08);
 }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg);
@@ -487,7 +487,7 @@ footer span { color: var(--text-secondary); }
   .hero-details .hero-detail:nth-child(2) { display: none; }
   .form-row { flex-direction: column; }
   /* Timeline — scrollable on mobile */
-  .roadmap { padding: 4rem 0 3rem; }
+  .roadmap { padding: 4rem 0 3rem; overflow: hidden; }
   .roadmap-inner { padding: 0; }
   .roadmap .tag, .roadmap h2, .roadmap-stats { padding: 0 1.5rem; }
   .semester-track {
@@ -787,6 +787,7 @@ window.addEventListener('load', driveFlipCards);
 // 4. Scroll-driven semester timeline
 const semTrack = document.getElementById('semesterTrack');
 const sems = document.querySelectorAll('.sem');
+let mobileTimelineIn = false;
 
 function animateTimeline() {
   if (!semTrack) return;
@@ -795,11 +796,16 @@ function animateTimeline() {
   const viewH = window.innerHeight;
 
   if (isMobile) {
-    // On mobile: reveal all dots at once when track enters view, hide when above
-    const inView = rect.top < viewH * 0.9;
-    const fullWidth = semTrack.scrollWidth - 24;
-    document.documentElement.style.setProperty('--timeline-width', inView ? fullWidth + 'px' : '0px');
-    sems.forEach(s => inView ? s.classList.add('sem-visible') : s.classList.remove('sem-visible'));
+    const inView = rect.top < viewH * 0.88;
+    if (inView && !mobileTimelineIn) {
+      mobileTimelineIn = true;
+      document.documentElement.style.setProperty('--timeline-width', (semTrack.scrollWidth - 24) + 'px');
+      sems.forEach((s, i) => setTimeout(() => s.classList.add('sem-visible'), i * 70));
+    } else if (!inView && mobileTimelineIn) {
+      mobileTimelineIn = false;
+      document.documentElement.style.setProperty('--timeline-width', '0px');
+      sems.forEach(s => s.classList.remove('sem-visible'));
+    }
     return;
   }
 
