@@ -754,9 +754,9 @@ function driveFlipCards() {
       card.classList.remove('card-flipped');
     }
   });
-  if (scrolled >= 0 && progress < 1) {
+  if (rect.top < window.innerHeight * 0.9) {
     whatsNext.classList.add('in-view');
-  } else if (scrolled < 0) {
+  } else {
     whatsNext.classList.remove('in-view');
     sparkledOnce = false;
   }
@@ -768,13 +768,14 @@ if (window.innerWidth <= 700) {
     entries.forEach(entry => {
       const i = Array.from(flipCards).indexOf(entry.target);
       if (entry.isIntersecting) {
+        whatsNext.classList.add('in-view');
         setTimeout(() => {
           entry.target.classList.add('card-flipped');
           if (!sparkledOnce) { spawnSparkles(); sparkledOnce = true; }
         }, i * 180);
       } else {
         entry.target.classList.remove('card-flipped');
-        if (i === 0) sparkledOnce = false;
+        if (i === 0) { sparkledOnce = false; whatsNext.classList.remove('in-view'); }
       }
     });
   }, { threshold: 0.25 });
