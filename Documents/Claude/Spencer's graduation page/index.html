@@ -770,35 +770,29 @@ window.addEventListener('load', driveFlipCards);
 // 4. Scroll-driven semester timeline
 const semTrack = document.getElementById('semesterTrack');
 const sems = document.querySelectorAll('.sem');
-let timelineAnimated = false;
 
 function animateTimeline() {
-  if (!semTrack || timelineAnimated) return;
+  if (!semTrack) return;
   const rect = semTrack.getBoundingClientRect();
   const viewH = window.innerHeight;
-  // Start when track enters bottom third, complete when it's centered
   const start = viewH * 0.85;
   const end = viewH * 0.35;
   const progress = Math.min(1, Math.max(0, (start - rect.top) / (start - end)));
 
-  // Animate the progress line
-  const lineWidth = semTrack.offsetWidth - 24; // minus padding
-  semTrack.style.setProperty('--line-progress', (progress * lineWidth) + 'px');
-  const afterEl = semTrack.querySelector(':scope') || semTrack;
-  afterEl.style.cssText += '';  // force repaint
-  // We'll use a CSS variable approach
+  // Animate the progress line forward and backward
+  const lineWidth = semTrack.offsetWidth - 24;
   document.documentElement.style.setProperty('--timeline-width', (progress * lineWidth) + 'px');
 
-  // Show dots progressively
+  // Show/hide dots based on scroll progress (bidirectional)
   const totalSems = sems.length;
   const activeSems = Math.floor(progress * (totalSems + 0.5));
   sems.forEach((s, i) => {
     if (i < activeSems) {
       s.classList.add('sem-visible');
+    } else {
+      s.classList.remove('sem-visible');
     }
   });
-
-  if (progress >= 1) timelineAnimated = true;
 }
 
 // 5. Scroll handler for timeline + parallax
