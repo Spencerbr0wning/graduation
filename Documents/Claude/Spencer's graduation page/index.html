@@ -537,6 +537,9 @@ footer span { color: var(--text-secondary); }
   .sem-year { font-size: 0.62rem; }
 }
 </style>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 <nav>
@@ -869,29 +872,52 @@ window.addEventListener('scroll', () => {
     ticking = true;
   }
 });
-let comments = [];
-function renderComments() {
+// ============ FIREBASE COMMENTS ============
+const firebaseConfig = {
+  apiKey: "PASTE_YOUR_API_KEY",
+  authDomain: "PASTE_YOUR_AUTH_DOMAIN",
+  projectId: "PASTE_YOUR_PROJECT_ID",
+  storageBucket: "PASTE_YOUR_STORAGE_BUCKET",
+  messagingSenderId: "PASTE_YOUR_SENDER_ID",
+  appId: "PASTE_YOUR_APP_ID"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const commentsRef = db.collection('comments');
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+// Real-time listener — updates for all visitors instantly
+commentsRef.orderBy('timestamp', 'desc').onSnapshot(snapshot => {
   const list = document.getElementById('commentsList');
   list.innerHTML = '';
-  comments.forEach(c => {
+  snapshot.forEach(doc => {
+    const c = doc.data();
     const div = document.createElement('div');
     div.className = 'comment-bubble';
     div.innerHTML = '<div class="c-name">' + esc(c.name) + '</div><div class="c-text">' + esc(c.text) + '</div><div class="c-time">' + esc(c.time) + '</div>';
     list.appendChild(div);
   });
-}
+});
+
 function addComment() {
   const n = document.getElementById('commenterName');
   const t = document.getElementById('commentText');
   if (!n.value.trim() || !t.value.trim()) return;
   const d = new Date();
   const mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  comments.unshift({ name: n.value.trim(), text: t.value.trim(), time: mo[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear() });
-  n.value = ''; t.value = '';
-  renderComments();
+  const btn = document.querySelector('.submit-btn span');
+  btn.textContent = 'Sending...';
+  commentsRef.add({
+    name: n.value.trim(),
+    text: t.value.trim(),
+    time: mo[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear(),
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(() => {
+    n.value = ''; t.value = '';
+    btn.textContent = 'Send';
+  }).catch(() => { btn.textContent = 'Send'; });
 }
-function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-renderComments();
 const navEl = document.querySelector('nav');
 window.addEventListener('scroll', () => {
   navEl.classList.toggle('scrolled', window.scrollY > 80);
