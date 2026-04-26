@@ -593,11 +593,12 @@ footer span { color: var(--text-secondary); }
   .hero-details .hero-detail:nth-child(2) { display: none; }
   .form-row { flex-direction: column; }
   /* Timeline — sticky scroll-driven on mobile too */
-  .roadmap { height: 260vh; overflow: hidden; }
+  .roadmap { height: 280vh; position: relative; overflow: visible; }
   .roadmap-sticky {
     position: sticky; top: 0; height: 100vh;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 3rem 0 2rem;
+    padding: 2rem 0;
+    overflow: hidden;
   }
   .roadmap-inner { padding: 0; width: 100%; }
   .roadmap .tag, .roadmap h2, .roadmap-stats { padding: 0 1.5rem; }
