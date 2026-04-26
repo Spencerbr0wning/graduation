@@ -425,9 +425,11 @@ nav .venmo-nav:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--a
 .venmo-btn { display: inline-flex; align-items: center; gap: 0.6rem; background: var(--bg-elevated); color: var(--text); text-decoration: none; padding: 0.9rem 2rem; border-radius: 12px; border: 1px solid var(--border); font-size: 0.9rem; font-weight: 600; font-family: 'Inter', sans-serif; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 .venmo-btn:hover { border-color: var(--accent); box-shadow: 0 0 30px var(--accent-glow); transform: translateY(-2px); }
 .venmo-btn svg { width: 20px; height: 20px; color: #3d95ce; }
-footer { text-align: center; padding: 3rem 2rem; border-top: 1px solid var(--border); }
+footer { text-align: center; padding: 3rem 2rem 2rem; border-top: 1px solid var(--border); }
 footer p { font-size: 0.75rem; color: var(--text-tertiary); letter-spacing: 0.04em; }
 footer span { color: var(--text-secondary); }
+.closing-photo { width: 100%; max-height: 88vh; overflow: hidden; display: block; }
+.closing-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
 /* Hero gift button with wave animation */
 .hero-gift-btn {
   display: inline-flex;
@@ -730,6 +732,9 @@ footer span { color: var(--text-secondary); }
 <footer>
   <p>Designed by <span>Spencer</span></p>
 </footer>
+<div class="closing-photo">
+  <img src="Kayla_graduation.JPG" alt="Spencer and McKayla at graduation">
+</div>
 <script>
 // --- Page-flip scroll system ---
 
