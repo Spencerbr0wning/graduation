@@ -165,7 +165,16 @@ nav, section, footer, .section-divider, .container { position: relative; z-index
   .topo-side { width: 14vw; min-width: 80px; opacity: 0.85; }
 }
 @media (max-width: 600px) {
-  .topo-side { display: none; }
+  .topo-side {
+    width: 14vw;
+    min-width: 48px;
+    max-width: 90px;
+  }
+  .topo-side svg path { stroke: rgba(255,255,255,0.07); }
+  /* Hide the outermost rings on mobile so lines stay tucked near the edge */
+  .topo-side svg .t1,
+  .topo-side svg .t2,
+  .topo-side svg .t3 { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .topo-side svg .topo-draw { transition: none; stroke-dashoffset: 0; }
