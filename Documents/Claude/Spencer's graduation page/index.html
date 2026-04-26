@@ -113,6 +113,81 @@ section { position: relative; }
   margin: 0 auto;
   transform-origin: center;
 }
+/* Hand-drawn mountain scene */
+.mountain-scene {
+  width: 100%;
+  max-width: 1100px;
+  margin: 4rem auto 2rem;
+  padding: 0 2rem;
+  position: relative;
+}
+.mountain-scene .ms-caption {
+  text-align: center;
+  font-size: 0.72rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--text-tertiary, #6b6b75);
+  margin-bottom: 1.75rem;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.9s ease 0.6s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.6s;
+}
+.mountain-scene.in-view .ms-caption {
+  opacity: 0.7;
+  transform: translateY(0);
+}
+.mountain-scene svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.mountain-scene svg path,
+.mountain-scene svg line,
+.mountain-scene svg polyline,
+.mountain-scene svg circle {
+  fill: none;
+  stroke: var(--text-secondary, #b5b5be);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.mountain-scene svg .ms-draw {
+  stroke-dasharray: var(--len, 1200);
+  stroke-dashoffset: var(--len, 1200);
+  transition: stroke-dashoffset 2.2s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.mountain-scene.in-view svg .ms-draw {
+  stroke-dashoffset: 0;
+}
+.mountain-scene svg .ms-d1 { transition-delay: 0s; }
+.mountain-scene svg .ms-d2 { transition-delay: 0.25s; }
+.mountain-scene svg .ms-d3 { transition-delay: 0.5s; }
+.mountain-scene svg .ms-d4 { transition-delay: 0.8s; }
+.mountain-scene svg .ms-d5 { transition-delay: 1.05s; }
+.mountain-scene svg .ms-d6 { transition-delay: 1.3s; }
+.mountain-scene svg .ms-hatch {
+  stroke-width: 0.7;
+  opacity: 0.55;
+}
+.mountain-scene svg .ms-ray {
+  stroke-width: 0.9;
+  opacity: 0.75;
+}
+.mountain-scene svg .ms-tree {
+  stroke-width: 0.9;
+}
+.mountain-scene svg .ms-sun {
+  stroke-width: 1.2;
+  stroke: var(--accent, #7aa7ff);
+  opacity: 0.85;
+}
+.mountain-scene svg .ms-ray { stroke: var(--accent, #7aa7ff); }
+@media (max-width: 600px) {
+  .mountain-scene { margin: 2.5rem auto 1.5rem; padding: 0 1.25rem; }
+  .mountain-scene .ms-caption { font-size: 0.64rem; letter-spacing: 0.28em; margin-bottom: 1rem; }
+}
 nav {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -679,6 +754,99 @@ footer span { color: var(--text-secondary); }
   </div>
 </section>
 <div class="section-divider"></div>
+<div class="mountain-scene" id="mountainScene" aria-hidden="true">
+  <div class="ms-caption">Onward · Upward</div>
+  <svg viewBox="0 0 1000 360" preserveAspectRatio="xMidYMid meet" role="img">
+    <!-- Sun with radiating rays (top-right) -->
+    <g>
+      <circle class="ms-draw ms-d1 ms-sun" cx="780" cy="95" r="22" style="--len: 160;"/>
+      <line class="ms-draw ms-d1 ms-ray" x1="780" y1="55" x2="780" y2="38" style="--len: 25;"/>
+      <line class="ms-draw ms-d1 ms-ray" x1="820" y1="95" x2="838" y2="95" style="--len: 25;"/>
+      <line class="ms-draw ms-d1 ms-ray" x1="780" y1="135" x2="780" y2="152" style="--len: 25;"/>
+      <line class="ms-draw ms-d1 ms-ray" x1="740" y1="95" x2="722" y2="95" style="--len: 25;"/>
+      <line class="ms-draw ms-d1 ms-ray" x1="809" y1="66" x2="822" y2="53" style="--len: 24;"/>
+      <line class="ms-draw ms-d1 ms-ray" x1="809" y1="124" x2="822" y2="137" style="--len: 24;"/>
+      <line class="ms-draw ms-d1 ms-ray" x1="751" y1="124" x2="738" y2="137" style="--len: 24;"/>
+      <line class="ms-draw ms-d1 ms-ray" x1="751" y1="66" x2="738" y2="53" style="--len: 24;"/>
+    </g>
+
+    <!-- Far mountains (back layer) -->
+    <path class="ms-draw ms-d2" style="--len: 1400;"
+      d="M 0 215 L 90 165 L 145 195 L 220 140 L 295 195 L 360 175 L 430 140 L 500 195 L 560 165 L 640 130 L 720 195 L 790 170 L 870 200 L 945 175 L 1000 200" />
+
+    <!-- Mid mountains with hatching -->
+    <path class="ms-draw ms-d3" style="--len: 1500;"
+      d="M -10 260 L 80 205 L 130 235 L 200 175 L 270 240 L 340 200 L 400 165 L 470 220 L 540 185 L 620 240 L 700 195 L 770 235 L 840 210 L 920 250 L 1010 220 L 1010 360 L -10 360 Z" />
+
+    <!-- Hatching on mid-left peak -->
+    <g class="ms-draw ms-d4 ms-hatch" style="--len: 220;">
+      <line x1="200" y1="180" x2="245" y2="225"/>
+      <line x1="208" y1="180" x2="253" y2="225"/>
+      <line x1="216" y1="183" x2="261" y2="228"/>
+      <line x1="224" y1="187" x2="269" y2="232"/>
+      <line x1="232" y1="192" x2="277" y2="237"/>
+      <line x1="240" y1="198" x2="285" y2="243"/>
+    </g>
+    <!-- Hatching on mid-right peak -->
+    <g class="ms-draw ms-d4 ms-hatch" style="--len: 220;">
+      <line x1="620" y1="240" x2="668" y2="200"/>
+      <line x1="624" y1="246" x2="672" y2="206"/>
+      <line x1="630" y1="250" x2="678" y2="210"/>
+      <line x1="636" y1="254" x2="684" y2="214"/>
+      <line x1="642" y1="258" x2="690" y2="218"/>
+    </g>
+    <!-- Hatching on far peak -->
+    <g class="ms-draw ms-d4 ms-hatch" style="--len: 180;">
+      <line x1="430" y1="155" x2="470" y2="195"/>
+      <line x1="438" y1="153" x2="478" y2="193"/>
+      <line x1="446" y1="155" x2="486" y2="195"/>
+      <line x1="454" y1="160" x2="494" y2="200"/>
+    </g>
+
+    <!-- Ridge line on tallest mountain -->
+    <path class="ms-draw ms-d4" style="--len: 280;"
+      d="M 270 240 L 340 200 L 400 165 L 470 220" />
+
+    <!-- Foreground horizon line -->
+    <path class="ms-draw ms-d5" style="--len: 1100;"
+      d="M -10 290 C 150 285 320 295 480 288 C 640 282 800 295 1010 290" />
+
+    <!-- Pine forest (foreground silhouette) -->
+    <g class="ms-draw ms-d6 ms-tree" style="--len: 80;">
+      <!-- tree 1 -->
+      <path d="M 60 320 L 70 295 L 80 320 Z M 65 312 L 68 308 L 72 308 L 75 312 M 62 318 L 78 318"/>
+      <!-- tree 2 -->
+      <path d="M 110 322 L 122 290 L 134 322 Z"/>
+      <!-- tree 3 -->
+      <path d="M 175 320 L 184 296 L 193 320 Z"/>
+      <!-- tree 4 -->
+      <path d="M 240 322 L 252 288 L 264 322 Z"/>
+      <!-- tree 5 -->
+      <path d="M 310 320 L 320 298 L 330 320 Z"/>
+      <!-- tree 6 -->
+      <path d="M 380 322 L 392 290 L 404 322 Z"/>
+      <!-- tree 7 -->
+      <path d="M 455 320 L 464 298 L 473 320 Z"/>
+      <!-- tree 8 -->
+      <path d="M 525 322 L 537 290 L 549 322 Z"/>
+      <!-- tree 9 -->
+      <path d="M 600 320 L 609 296 L 618 320 Z"/>
+      <!-- tree 10 -->
+      <path d="M 670 322 L 682 288 L 694 322 Z"/>
+      <!-- tree 11 -->
+      <path d="M 745 320 L 754 298 L 763 320 Z"/>
+      <!-- tree 12 -->
+      <path d="M 815 322 L 827 290 L 839 322 Z"/>
+      <!-- tree 13 -->
+      <path d="M 885 320 L 894 296 L 903 320 Z"/>
+      <!-- tree 14 -->
+      <path d="M 945 322 L 956 292 L 967 322 Z"/>
+    </g>
+
+    <!-- Ground line -->
+    <line class="ms-draw ms-d6" x1="0" y1="335" x2="1000" y2="335" style="--len: 1000;"/>
+  </svg>
+</div>
 <section class="whats-next" id="next">
   <div class="whats-next-sticky">
     <div class="magic-sparkles" id="magicSparkles"></div>
@@ -785,7 +953,7 @@ const sectionObs = new IntersectionObserver((entries) => {
     if (entry.isIntersecting) entry.target.classList.add('in-view');
   });
 }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-document.querySelectorAll('.page-section, .section-divider').forEach(el => sectionObs.observe(el));
+document.querySelectorAll('.page-section, .section-divider, .mountain-scene').forEach(el => sectionObs.observe(el));
 
 const flipCards = document.querySelectorAll('.flip-card');
 let sparkledOnce = false;
