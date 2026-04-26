@@ -496,37 +496,39 @@ nav .venmo-nav:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--a
 .venmo-btn { display: inline-flex; align-items: center; gap: 0.6rem; background: var(--bg-elevated); color: var(--text); text-decoration: none; padding: 0.9rem 2rem; border-radius: 12px; border: 1px solid var(--border); font-size: 0.9rem; font-weight: 600; font-family: 'Inter', sans-serif; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 .venmo-btn:hover { border-color: var(--accent); box-shadow: 0 0 30px var(--accent-glow); transform: translateY(-2px); }
 .venmo-btn svg { width: 20px; height: 20px; color: #3d95ce; }
-footer { text-align: center; padding: 4rem 2rem 3rem; border-top: 1px solid var(--border); }
+footer { text-align: center; padding: 3rem 2rem 2.5rem; border-top: 1px solid var(--border); }
 footer .signature {
   display: inline-block;
   position: relative;
+  opacity: 0.75;
 }
 footer .signature svg {
-  width: clamp(240px, 42vw, 420px);
+  width: clamp(150px, 24vw, 230px);
   height: auto;
   display: block;
   overflow: visible;
 }
 footer .signature svg text {
   font-family: 'Caveat', cursive;
-  font-weight: 600;
-  font-size: 56px;
+  font-weight: 500;
+  font-size: 30px;
+  letter-spacing: 0.5px;
   fill: transparent;
-  stroke: var(--text-secondary);
-  stroke-width: 1.1;
+  stroke: var(--text-tertiary);
+  stroke-width: 0.7;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-dasharray: var(--sig-len, 1200);
-  stroke-dashoffset: var(--sig-len, 1200);
-  transition: stroke-dashoffset 2.6s cubic-bezier(0.65, 0, 0.35, 1),
-              fill 0.9s ease 2.4s;
+  stroke-dasharray: var(--sig-len, 900);
+  stroke-dashoffset: var(--sig-len, 900);
+  transition: stroke-dashoffset 2.4s cubic-bezier(0.65, 0, 0.35, 1),
+              fill 1s ease 2.2s;
 }
 footer .signature.signed svg text {
   stroke-dashoffset: 0;
-  fill: var(--text-secondary);
+  fill: var(--text-tertiary);
 }
 @media (max-width: 600px) {
-  footer .signature svg text { font-size: 44px; }
+  footer .signature svg text { font-size: 24px; }
 }
 .flip-card-photo { width: 100%; border-radius: 10px; overflow: hidden; margin-top: 1rem; aspect-ratio: 4/3; }
 .flip-card-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 25%; display: block; }
@@ -880,8 +882,8 @@ footer .signature.signed svg text {
 </section>
 <footer>
   <div class="signature" id="signatureBlock" aria-label="Designed by Spencer">
-    <svg viewBox="0 0 420 90" preserveAspectRatio="xMidYMid meet" role="img">
-      <text id="signatureText" x="210" y="62" text-anchor="middle">Designed by Spencer</text>
+    <svg viewBox="0 0 230 50" preserveAspectRatio="xMidYMid meet" role="img">
+      <text id="signatureText" x="115" y="34" text-anchor="middle">Designed by Spencer</text>
     </svg>
   </div>
 </footer>
