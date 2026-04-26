@@ -113,63 +113,62 @@ section { position: relative; }
   margin: 0 auto;
   transform-origin: center;
 }
-/* Hand-drawn mountain scene — fixed background */
-.mountain-bg {
+/* Topographic side art — fixed, minimal, off the content */
+.topo-side {
   position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
+  top: 0;
+  bottom: 0;
+  width: 18vw;
+  max-width: 280px;
+  min-width: 140px;
   pointer-events: none;
   z-index: 0;
   opacity: 0;
-  transition: opacity 1.6s ease 0.3s;
+  transition: opacity 2s ease 0.2s;
 }
-.mountain-bg.ready { opacity: 1; }
-.mountain-bg svg {
+.topo-side.left  { left: 0; }
+.topo-side.right { right: 0; transform: scaleX(-1); }
+.topo-side.ready { opacity: 1; }
+.topo-side svg {
   position: absolute;
-  bottom: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
-  height: 70vh;
-  min-height: 360px;
+  height: 100%;
   display: block;
   overflow: visible;
-  transform: translateY(calc(var(--scroll-y, 0) * 0.04px));
 }
-.mountain-bg svg path,
-.mountain-bg svg line,
-.mountain-bg svg circle {
+.topo-side svg path {
   fill: none;
-  stroke: rgba(255,255,255,0.14);
+  stroke: rgba(255,255,255,0.10);
   stroke-width: 1;
   stroke-linecap: round;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
-.mountain-bg svg .ms-draw {
-  stroke-dasharray: var(--len, 1200);
-  stroke-dashoffset: var(--len, 1200);
-  transition: stroke-dashoffset 2.6s cubic-bezier(0.65, 0, 0.35, 1);
+.topo-side svg .topo-draw {
+  stroke-dasharray: var(--len, 1500);
+  stroke-dashoffset: var(--len, 1500);
+  transition: stroke-dashoffset 3s cubic-bezier(0.65, 0, 0.35, 1);
 }
-.mountain-bg.ready svg .ms-draw { stroke-dashoffset: 0; }
-.mountain-bg svg .ms-d1 { transition-delay: 0.1s; }
-.mountain-bg svg .ms-d2 { transition-delay: 0.4s; }
-.mountain-bg svg .ms-d3 { transition-delay: 0.75s; }
-.mountain-bg svg .ms-d4 { transition-delay: 1.1s; }
-.mountain-bg svg .ms-d5 { transition-delay: 1.4s; }
-.mountain-bg svg .ms-d6 { transition-delay: 1.7s; }
-.mountain-bg svg .ms-hatch { stroke-width: 0.6; stroke: rgba(255,255,255,0.08); }
-.mountain-bg svg .ms-tree  { stroke-width: 0.85; stroke: rgba(255,255,255,0.16); }
-.mountain-bg svg .ms-sun   { stroke: rgba(59,130,246,0.55); stroke-width: 1.1; }
-.mountain-bg svg .ms-ray   { stroke: rgba(59,130,246,0.4);  stroke-width: 0.9; }
-/* Make sure all content sits above the background */
-nav, section, footer, .section-divider { position: relative; z-index: 1; }
+.topo-side.ready svg .topo-draw { stroke-dashoffset: 0; }
+.topo-side svg .t1 { transition-delay: 0s; }
+.topo-side svg .t2 { transition-delay: 0.18s; }
+.topo-side svg .t3 { transition-delay: 0.36s; }
+.topo-side svg .t4 { transition-delay: 0.54s; }
+.topo-side svg .t5 { transition-delay: 0.72s; }
+.topo-side svg .t6 { transition-delay: 0.9s; }
+.topo-side svg .t7 { transition-delay: 1.08s; }
+.topo-side svg .t8 { transition-delay: 1.26s; }
+/* Keep all real content above */
+nav, section, footer, .section-divider, .container { position: relative; z-index: 1; }
+@media (max-width: 900px) {
+  .topo-side { width: 14vw; min-width: 80px; opacity: 0.85; }
+}
 @media (max-width: 600px) {
-  .mountain-bg svg { height: 50vh; min-height: 280px; }
+  .topo-side { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .mountain-bg svg { transform: none; }
-  .mountain-bg svg .ms-draw { transition: none; stroke-dashoffset: 0; }
+  .topo-side svg .topo-draw { transition: none; stroke-dashoffset: 0; }
 }
 nav {
   position: fixed;
@@ -608,74 +607,29 @@ footer span { color: var(--text-secondary); }
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
-<div class="mountain-bg" id="mountainBg" aria-hidden="true">
-  <svg viewBox="0 0 1000 360" preserveAspectRatio="xMidYMax slice">
-    <!-- Sun -->
-    <g>
-      <circle class="ms-draw ms-d1 ms-sun" cx="780" cy="95" r="22" style="--len: 160;"/>
-      <line class="ms-draw ms-d1 ms-ray" x1="780" y1="55" x2="780" y2="38" style="--len: 25;"/>
-      <line class="ms-draw ms-d1 ms-ray" x1="820" y1="95" x2="838" y2="95" style="--len: 25;"/>
-      <line class="ms-draw ms-d1 ms-ray" x1="780" y1="135" x2="780" y2="152" style="--len: 25;"/>
-      <line class="ms-draw ms-d1 ms-ray" x1="740" y1="95" x2="722" y2="95" style="--len: 25;"/>
-      <line class="ms-draw ms-d1 ms-ray" x1="809" y1="66" x2="822" y2="53" style="--len: 24;"/>
-      <line class="ms-draw ms-d1 ms-ray" x1="809" y1="124" x2="822" y2="137" style="--len: 24;"/>
-      <line class="ms-draw ms-d1 ms-ray" x1="751" y1="124" x2="738" y2="137" style="--len: 24;"/>
-      <line class="ms-draw ms-d1 ms-ray" x1="751" y1="66" x2="738" y2="53" style="--len: 24;"/>
-    </g>
-    <!-- Far ridge -->
-    <path class="ms-draw ms-d2" style="--len: 1400;"
-      d="M 0 215 L 90 165 L 145 195 L 220 140 L 295 195 L 360 175 L 430 140 L 500 195 L 560 165 L 640 130 L 720 195 L 790 170 L 870 200 L 945 175 L 1000 200" />
-    <!-- Foreground range -->
-    <path class="ms-draw ms-d3" style="--len: 1500;"
-      d="M -10 260 L 80 205 L 130 235 L 200 175 L 270 240 L 340 200 L 400 165 L 470 220 L 540 185 L 620 240 L 700 195 L 770 235 L 840 210 L 920 250 L 1010 220 L 1010 360 L -10 360 Z" />
-    <!-- Hatching peak 1 -->
-    <g class="ms-draw ms-d4 ms-hatch" style="--len: 220;">
-      <line x1="200" y1="180" x2="245" y2="225"/>
-      <line x1="208" y1="180" x2="253" y2="225"/>
-      <line x1="216" y1="183" x2="261" y2="228"/>
-      <line x1="224" y1="187" x2="269" y2="232"/>
-      <line x1="232" y1="192" x2="277" y2="237"/>
-      <line x1="240" y1="198" x2="285" y2="243"/>
-    </g>
-    <!-- Hatching peak 2 -->
-    <g class="ms-draw ms-d4 ms-hatch" style="--len: 220;">
-      <line x1="620" y1="240" x2="668" y2="200"/>
-      <line x1="624" y1="246" x2="672" y2="206"/>
-      <line x1="630" y1="250" x2="678" y2="210"/>
-      <line x1="636" y1="254" x2="684" y2="214"/>
-      <line x1="642" y1="258" x2="690" y2="218"/>
-    </g>
-    <!-- Hatching peak 3 (tallest) -->
-    <g class="ms-draw ms-d4 ms-hatch" style="--len: 180;">
-      <line x1="430" y1="155" x2="470" y2="195"/>
-      <line x1="438" y1="153" x2="478" y2="193"/>
-      <line x1="446" y1="155" x2="486" y2="195"/>
-      <line x1="454" y1="160" x2="494" y2="200"/>
-    </g>
-    <!-- Ridge highlight -->
-    <path class="ms-draw ms-d4" style="--len: 280;"
-      d="M 270 240 L 340 200 L 400 165 L 470 220" />
-    <!-- Horizon -->
-    <path class="ms-draw ms-d5" style="--len: 1100;"
-      d="M -10 290 C 150 285 320 295 480 288 C 640 282 800 295 1010 290" />
-    <!-- Pine forest -->
-    <g class="ms-draw ms-d6 ms-tree" style="--len: 80;">
-      <path d="M 60 320 L 70 295 L 80 320 Z"/>
-      <path d="M 110 322 L 122 290 L 134 322 Z"/>
-      <path d="M 175 320 L 184 296 L 193 320 Z"/>
-      <path d="M 240 322 L 252 288 L 264 322 Z"/>
-      <path d="M 310 320 L 320 298 L 330 320 Z"/>
-      <path d="M 380 322 L 392 290 L 404 322 Z"/>
-      <path d="M 455 320 L 464 298 L 473 320 Z"/>
-      <path d="M 525 322 L 537 290 L 549 322 Z"/>
-      <path d="M 600 320 L 609 296 L 618 320 Z"/>
-      <path d="M 670 322 L 682 288 L 694 322 Z"/>
-      <path d="M 745 320 L 754 298 L 763 320 Z"/>
-      <path d="M 815 322 L 827 290 L 839 322 Z"/>
-      <path d="M 885 320 L 894 296 L 903 320 Z"/>
-      <path d="M 945 322 L 956 292 L 967 322 Z"/>
-    </g>
-    <line class="ms-draw ms-d6" x1="0" y1="335" x2="1000" y2="335" style="--len: 1000;"/>
+<div class="topo-side left" id="topoLeft" aria-hidden="true">
+  <svg viewBox="0 0 200 1000" preserveAspectRatio="xMidYMid slice">
+    <!-- Topographic contour lines — concentric mountain peak emerging from left edge -->
+    <path class="topo-draw t1" style="--len: 1900;" d="M -20 100 C 60 130, 120 180, 150 260 C 175 340, 165 430, 130 510 C 95 590, 60 660, 20 740 C -10 800, -30 860, -40 920" />
+    <path class="topo-draw t2" style="--len: 1700;" d="M -20 150 C 50 180, 100 220, 130 290 C 155 360, 145 440, 115 510 C 85 580, 55 645, 20 720 C -5 780, -25 840, -40 900" />
+    <path class="topo-draw t3" style="--len: 1500;" d="M -20 200 C 40 225, 85 260, 110 320 C 132 380, 125 450, 100 510 C 75 570, 50 630, 20 700 C 0 760, -20 820, -40 880" />
+    <path class="topo-draw t4" style="--len: 1300;" d="M -20 250 C 30 270, 70 300, 90 350 C 110 400, 105 460, 85 510 C 65 560, 45 615, 20 680 C 5 740, -15 800, -40 860" />
+    <path class="topo-draw t5" style="--len: 1100;" d="M -20 300 C 20 315, 55 340, 70 380 C 88 420, 85 470, 70 510 C 55 550, 40 600, 20 660 C 10 720, -10 780, -40 840" />
+    <path class="topo-draw t6" style="--len: 900;"  d="M -20 360 C 12 370, 40 385, 50 415 C 65 450, 65 485, 55 515 C 45 545, 35 580, 20 625 C 12 685, -5 750, -40 820" />
+    <path class="topo-draw t7" style="--len: 700;"  d="M -20 420 C 5 425, 25 435, 35 455 C 45 480, 48 500, 40 520 C 32 540, 25 565, 18 595 C 12 650, -2 720, -40 800" />
+    <path class="topo-draw t8" style="--len: 500;"  d="M -20 480 C 0 482, 12 488, 18 500 C 25 512, 28 520, 25 528 C 22 540, 18 555, 14 575 C 10 620, -3 695, -40 780" />
+  </svg>
+</div>
+<div class="topo-side right" id="topoRight" aria-hidden="true">
+  <svg viewBox="0 0 200 1000" preserveAspectRatio="xMidYMid slice">
+    <path class="topo-draw t1" style="--len: 1900;" d="M -20 100 C 60 130, 120 180, 150 260 C 175 340, 165 430, 130 510 C 95 590, 60 660, 20 740 C -10 800, -30 860, -40 920" />
+    <path class="topo-draw t2" style="--len: 1700;" d="M -20 150 C 50 180, 100 220, 130 290 C 155 360, 145 440, 115 510 C 85 580, 55 645, 20 720 C -5 780, -25 840, -40 900" />
+    <path class="topo-draw t3" style="--len: 1500;" d="M -20 200 C 40 225, 85 260, 110 320 C 132 380, 125 450, 100 510 C 75 570, 50 630, 20 700 C 0 760, -20 820, -40 880" />
+    <path class="topo-draw t4" style="--len: 1300;" d="M -20 250 C 30 270, 70 300, 90 350 C 110 400, 105 460, 85 510 C 65 560, 45 615, 20 680 C 5 740, -15 800, -40 860" />
+    <path class="topo-draw t5" style="--len: 1100;" d="M -20 300 C 20 315, 55 340, 70 380 C 88 420, 85 470, 70 510 C 55 550, 40 600, 20 660 C 10 720, -10 780, -40 840" />
+    <path class="topo-draw t6" style="--len: 900;"  d="M -20 360 C 12 370, 40 385, 50 415 C 65 450, 65 485, 55 515 C 45 545, 35 580, 20 625 C 12 685, -5 750, -40 820" />
+    <path class="topo-draw t7" style="--len: 700;"  d="M -20 420 C 5 425, 25 435, 35 455 C 45 480, 48 500, 40 520 C 32 540, 25 565, 18 595 C 12 650, -2 720, -40 800" />
+    <path class="topo-draw t8" style="--len: 500;"  d="M -20 480 C 0 482, 12 488, 18 500 C 25 512, 28 520, 25 528 C 22 540, 18 555, 14 575 C 10 620, -3 695, -40 780" />
   </svg>
 </div>
 <nav>
@@ -914,10 +868,11 @@ const sectionObs = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 document.querySelectorAll('.page-section, .section-divider').forEach(el => sectionObs.observe(el));
-// Trigger background mountain scene draw-in on load
+// Trigger topographic side art draw-in on load
 requestAnimationFrame(() => {
-  const mb = document.getElementById('mountainBg');
-  if (mb) setTimeout(() => mb.classList.add('ready'), 250);
+  setTimeout(() => {
+    document.querySelectorAll('.topo-side').forEach(el => el.classList.add('ready'));
+  }, 250);
 });
 
 const flipCards = document.querySelectorAll('.flip-card');
