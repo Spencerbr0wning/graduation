@@ -592,21 +592,33 @@ footer span { color: var(--text-secondary); }
   .hero-details { gap: 1.5rem; }
   .hero-details .hero-detail:nth-child(2) { display: none; }
   .form-row { flex-direction: column; }
-  /* Timeline — scrollable on mobile, no sticky */
-  .roadmap { height: auto; overflow: hidden; }
-  .roadmap-sticky { position: relative; height: auto; padding: 4rem 0 3rem; }
-  .roadmap-inner { padding: 0; }
-  .roadmap .tag, .roadmap h2, .roadmap-stats { padding: 0 1.5rem; }
-  .semester-track {
-    overflow-x: scroll;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding: 0.5rem 1.5rem 1.5rem;
-    gap: 0;
-    width: 100%;
+  /* Timeline — sticky scroll-driven on mobile too */
+  .roadmap { height: 260vh; overflow: hidden; }
+  .roadmap-sticky {
+    position: sticky; top: 0; height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 3rem 0 2rem;
   }
-  .semester-track::-webkit-scrollbar { display: none; }
-  .sem { min-width: 72px; flex-shrink: 0; }
+  .roadmap-inner { padding: 0; width: 100%; }
+  .roadmap .tag, .roadmap h2, .roadmap-stats { padding: 0 1.5rem; }
+  .roadmap h2 { margin-bottom: 2rem; }
+  .roadmap-stats { gap: 1.5rem; margin-top: 2rem; }
+  .semester-track-viewport {
+    width: 100%;
+    overflow: hidden;
+    padding: 0.5rem 0 1.5rem;
+  }
+  .semester-track {
+    display: flex;
+    width: max-content;
+    padding: 0 1.5rem;
+    transform: translateX(var(--track-x, 0px));
+    will-change: transform;
+    gap: 0;
+  }
+  .semester-track::before { left: calc(1.5rem + 12px); right: calc(1.5rem + 12px); }
+  .semester-track::after  { left: calc(1.5rem + 12px); }
+  .sem { min-width: 78px; flex-shrink: 0; }
   .sem-label { font-size: 0.68rem; }
   .sem-year { font-size: 0.62rem; }
 }
@@ -707,6 +719,7 @@ footer span { color: var(--text-secondary); }
   <div class="roadmap-inner">
     <div class="tag reveal">The journey</div>
     <h2 class="reveal">Semester by semester.</h2>
+    <div class="semester-track-viewport">
     <div class="semester-track" id="semesterTrack">
       <div class="sem done"><div class="sem-dot"></div><div class="sem-label">Fall</div><div class="sem-year">2022</div><div class="sem-badge start-badge">Start</div></div>
       <div class="sem done"><div class="sem-dot"></div><div class="sem-label">Spring</div><div class="sem-year">2023</div></div>
@@ -717,6 +730,7 @@ footer span { color: var(--text-secondary); }
       <div class="sem done summer"><div class="sem-dot"></div><div class="sem-label">Summer</div><div class="sem-year">2025</div><div class="sem-badge summer-badge">Extra</div></div>
       <div class="sem done"><div class="sem-dot"></div><div class="sem-label">Fall</div><div class="sem-year">2025</div></div>
       <div class="sem now"><div class="sem-dot"></div><div class="sem-label">Spring</div><div class="sem-year">2026</div><div class="sem-badge grad-badge">Grad</div></div>
+    </div>
     </div>
     <div class="roadmap-stats reveal">
       <div class="r-stat"><div class="num">9</div><div class="lbl">Semesters</div></div>
@@ -1016,29 +1030,31 @@ function animateTimeline() {
   if (!semTrack || !roadmapSection) return;
   const isMobile = window.innerWidth <= 600;
 
-  if (isMobile) {
-    const rect = semTrack.getBoundingClientRect();
-    const inView = rect.top < window.innerHeight * 0.88;
-    if (inView && !mobileTimelineIn) {
-      mobileTimelineIn = true;
-      document.documentElement.style.setProperty('--timeline-width', (semTrack.scrollWidth - 24) + 'px');
-      sems.forEach((s, i) => setTimeout(() => s.classList.add('sem-visible'), i * 70));
-    } else if (!inView && mobileTimelineIn) {
-      mobileTimelineIn = false;
-      document.documentElement.style.setProperty('--timeline-width', '0px');
-      sems.forEach(s => s.classList.remove('sem-visible'));
-    }
-    return;
-  }
-
-  // Desktop: drive from section scroll progress (sticky scroll)
+  // Both modes now drive from section scroll progress (sticky scroll)
   const sRect = roadmapSection.getBoundingClientRect();
   const scrolled = -sRect.top;
   const usable = Math.max(1, roadmapSection.offsetHeight - window.innerHeight);
   const progress = Math.min(1, Math.max(0, scrolled / usable));
 
-  const lineWidth = semTrack.offsetWidth - 24;
-  document.documentElement.style.setProperty('--timeline-width', (progress * lineWidth) + 'px');
+  if (isMobile) {
+    // Translate the track horizontally so the timeline "scrolls" through start->end
+    const trackWidth = semTrack.scrollWidth;
+    const viewport = semTrack.parentElement; // .semester-track-viewport
+    const viewportWidth = viewport ? viewport.offsetWidth : window.innerWidth;
+    const overflow = Math.max(0, trackWidth - viewportWidth);
+    const tx = -progress * overflow;
+    document.documentElement.style.setProperty('--track-x', tx + 'px');
+
+    // Progress line grows along the (translated) track in viewport coordinates.
+    // The track::after starts at left:1.5rem+12px in the track's own coordinate space.
+    // Total available line length within the track:
+    const innerLineLen = trackWidth - 48; // approximate (padding+dot offset on both sides)
+    document.documentElement.style.setProperty('--timeline-width', (progress * innerLineLen) + 'px');
+  } else {
+    document.documentElement.style.setProperty('--track-x', '0px');
+    const lineWidth = semTrack.offsetWidth - 24;
+    document.documentElement.style.setProperty('--timeline-width', (progress * lineWidth) + 'px');
+  }
 
   const totalSems = sems.length;
   const activeSems = Math.floor(progress * (totalSems + 0.5));
