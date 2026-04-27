@@ -662,39 +662,77 @@ nav .venmo-nav:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--a
   .cta-row .phone-btn, .cta-row .venmo-btn { width: 100%; min-width: 0; }
   .phone-btn { font-size: 1rem; padding: 0.9rem 1.5rem; }
 }
-footer { text-align: center; padding: 3rem 2rem 2.5rem; border-top: 1px solid var(--border); }
+footer { text-align: center; padding: 4rem 2rem 3rem; border-top: 1px solid var(--border); }
 footer .signature {
   display: inline-block;
   position: relative;
-  opacity: 0.75;
+  cursor: default;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+footer .signature:hover {
+  transform: translateY(-3px);
 }
 footer .signature svg {
-  width: clamp(150px, 24vw, 230px);
+  width: clamp(220px, 36vw, 340px);
   height: auto;
   display: block;
   overflow: visible;
 }
 footer .signature svg text {
   font-family: 'Caveat', cursive;
-  font-weight: 500;
-  font-size: 30px;
+  font-weight: 600;
+  font-size: 44px;
   letter-spacing: 0.5px;
   fill: transparent;
-  stroke: var(--text-tertiary);
-  stroke-width: 0.7;
+  stroke: var(--text-secondary);
+  stroke-width: 0.9;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-dasharray: var(--sig-len, 900);
-  stroke-dashoffset: var(--sig-len, 900);
-  transition: stroke-dashoffset 2.4s cubic-bezier(0.65, 0, 0.35, 1),
-              fill 1s ease 2.2s;
+  stroke-dasharray: var(--sig-len, 1100);
+  stroke-dashoffset: var(--sig-len, 1100);
+  transition: stroke-dashoffset 2.6s cubic-bezier(0.65, 0, 0.35, 1),
+              fill 1s ease 2.4s,
+              stroke 0.4s ease;
 }
 footer .signature.signed svg text {
   stroke-dashoffset: 0;
-  fill: var(--text-tertiary);
+  fill: var(--text);
+}
+footer .signature:hover svg text {
+  stroke: var(--accent);
+  fill: var(--accent);
+}
+/* Accent flourish underline that draws in after the signature */
+footer .signature svg .sig-flourish {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+  transition: stroke-dashoffset 1.4s cubic-bezier(0.65, 0, 0.35, 1) 2.2s,
+              opacity 0.6s ease 2.2s;
+  opacity: 0;
+}
+footer .signature.signed svg .sig-flourish {
+  stroke-dashoffset: 0;
+  opacity: 0.85;
+}
+/* Soft glow that pulses subtly once after sign-in completes */
+footer .signature.signed svg text {
+  filter: drop-shadow(0 0 0 transparent);
+  animation: sig-glow 2.8s ease 3.4s 1;
+}
+@keyframes sig-glow {
+  0%   { filter: drop-shadow(0 0 0 transparent); }
+  40%  { filter: drop-shadow(0 0 12px rgba(59,130,246,0.45)); }
+  100% { filter: drop-shadow(0 0 0 transparent); }
 }
 @media (max-width: 600px) {
-  footer .signature svg text { font-size: 24px; }
+  footer .signature svg text { font-size: 32px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  footer .signature.signed svg text { animation: none; }
 }
 .flip-card-photo { width: 100%; border-radius: 10px; overflow: hidden; margin-top: 1rem; aspect-ratio: 4/3; }
 .flip-card-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 25%; display: block; }
@@ -1055,8 +1093,10 @@ footer .signature.signed svg text {
 </section>
 <footer>
   <div class="signature" id="signatureBlock" aria-label="Designed by Spencer">
-    <svg viewBox="0 0 230 50" preserveAspectRatio="xMidYMid meet" role="img">
-      <text id="signatureText" x="115" y="34" text-anchor="middle">Designed by Spencer</text>
+    <svg viewBox="0 0 230 70" preserveAspectRatio="xMidYMid meet" role="img">
+      <text id="signatureText" x="115" y="38" text-anchor="middle">Designed by Spencer</text>
+      <!-- Hand-drawn underline flourish -->
+      <path class="sig-flourish" d="M 50 56 C 80 50, 120 60, 150 54 C 165 51, 178 53, 188 55" />
     </svg>
   </div>
 </footer>
