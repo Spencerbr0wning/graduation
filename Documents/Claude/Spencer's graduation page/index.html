@@ -566,6 +566,10 @@ nav .venmo-nav:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--a
   margin: 0 auto 2rem;
 }
 /* Per-character "being written" reveal */
+.thanks .word {
+  display: inline-block;
+  white-space: nowrap;
+}
 .thanks .char {
   display: inline-block;
   opacity: 0;
@@ -977,7 +981,7 @@ footer .signature.signed svg text {
     </a>
   </div>
   <div class="scroll-hint" id="scrollHint" aria-hidden="true">
-    <div class="scroll-label">Scroll · <span class="accent">The Journey</span></div>
+    <div class="scroll-label">Scroll to see <span class="accent">The Journey</span></div>
     <svg class="scroll-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="6 9 12 15 18 9"/>
     </svg>
@@ -1208,18 +1212,25 @@ document.querySelectorAll('.page-section, .section-divider').forEach(el => secti
       if (node.nodeType === Node.TEXT_NODE) {
         const frag = document.createDocumentFragment();
         const text = node.textContent;
-        for (let i = 0; i < text.length; i++) {
-          const ch = text[i];
-          if (ch === ' ') {
-            // Real space character — keep as text so line wrapping works naturally
-            frag.appendChild(document.createTextNode(' '));
+        // Split into words + spaces, wrap words in nowrap spans so chars
+        // within a word don't get broken across lines on narrow screens.
+        const tokens = text.split(/(\s+)/);
+        tokens.forEach(tok => {
+          if (!tok) return;
+          if (/^\s+$/.test(tok)) {
+            frag.appendChild(document.createTextNode(tok));
           } else {
-            const span = document.createElement('span');
-            span.className = 'char';
-            span.textContent = ch;
-            frag.appendChild(span);
+            const word = document.createElement('span');
+            word.className = 'word';
+            for (let i = 0; i < tok.length; i++) {
+              const span = document.createElement('span');
+              span.className = 'char';
+              span.textContent = tok[i];
+              word.appendChild(span);
+            }
+            frag.appendChild(word);
           }
-        }
+        });
         node.parentNode.replaceChild(frag, node);
       } else if (node.nodeType === Node.ELEMENT_NODE) {
         if (node.classList && node.classList.contains('char')) return;
