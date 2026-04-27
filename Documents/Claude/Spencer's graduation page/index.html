@@ -515,6 +515,26 @@ nav .venmo-nav:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--a
   font-size: 1.1em;
   letter-spacing: 0;
 }
+.thanks .thanks-quote {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: 1.25rem;
+  line-height: 1.55;
+  color: var(--text);
+  max-width: 540px;
+  margin: 0 auto 1.5rem;
+  letter-spacing: -0.005em;
+  position: relative;
+}
+.thanks .thanks-quote::before,
+.thanks .thanks-quote::after {
+  content: '';
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: var(--border);
+  margin: 1rem auto;
+}
 .thanks .heart {
   display: inline-block;
   width: 28px;
@@ -532,6 +552,7 @@ nav .venmo-nav:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--a
   .thanks { padding: 4rem 1.5rem 3rem; }
   .thanks h2 { font-size: 1.9rem; }
   .thanks .thanks-body { font-size: 0.98rem; line-height: 1.7; }
+  .thanks .thanks-quote { font-size: 1.1rem; }
 }
 .congrats { padding: 6rem 2rem; }
 .congrats-inner { max-width: 600px; margin: 0 auto; }
@@ -919,8 +940,9 @@ footer .signature.signed svg text {
     <div class="tag reveal">Gratitude</div>
     <h2 class="reveal">Thank you.</h2>
     <p class="thanks-body reveal">
-      A special thank you to <span class="accent-name">McKayla</span>, my wife — for the late nights, the patience, and being my safe place through every step. To my <span class="accent-name">family</span>, for believing in me long before I believed in myself. To the <span class="accent-name">mentors</span> who poured into me, and the <span class="accent-name">friends</span> who showed up at the very beginning of this journey — none of this would mean anything without you.
+      A special thank you to <span class="accent-name">McKayla</span>, my wife and best friend, for the late nights, the patience, love, and believing in me even when I didn’t. To my <span class="accent-name">family</span>, for their constant support. To the <span class="accent-name">mentors</span> who poured into me, and the wonderful network of <span class="accent-name">friends</span>.
     </p>
+    <p class="thanks-quote reveal">“The right relationships don’t just make life better, they make you better.”</p>
     <svg class="heart reveal" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M12 21s-7-4.35-9.5-8.5C.5 9 2 5 6 5c2 0 3.5 1 4 2 .5-1 2-2 4-2 4 0 5.5 4 3.5 7.5C19 16.65 12 21 12 21z"/>
     </svg>
