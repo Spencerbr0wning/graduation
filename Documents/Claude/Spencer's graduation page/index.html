@@ -266,6 +266,66 @@ nav .venmo-nav:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--a
   top: 20%; left: 50%; transform: translateX(-50%); pointer-events: none; opacity: 0.5;
 }
 .hero-inner { max-width: 680px; text-align: center; position: relative; }
+/* Scroll-down hint — appears a few seconds after landing, fades on scroll */
+.scroll-hint {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translate(-50%, 8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.2s ease, transform 1.2s cubic-bezier(0.16,1,0.3,1);
+  z-index: 5;
+}
+.scroll-hint.visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+.scroll-hint.dismissed {
+  opacity: 0 !important;
+  transform: translate(-50%, -4px);
+}
+.scroll-hint .scroll-label {
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.scroll-hint .scroll-track {
+  width: 1px;
+  height: 38px;
+  background: linear-gradient(to bottom, transparent, var(--text-tertiary) 30%, var(--text-tertiary) 70%, transparent);
+  position: relative;
+  overflow: hidden;
+}
+.scroll-hint .scroll-track::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 0;
+  width: 1px;
+  height: 14px;
+  background: var(--accent);
+  animation: scroll-drop 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes scroll-drop {
+  0%   { transform: translateY(0);  opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { transform: translateY(48px); opacity: 0; }
+}
+@media (max-width: 600px) {
+  .scroll-hint { bottom: 1.5rem; }
+  .scroll-hint .scroll-track { height: 30px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-hint .scroll-track::after { animation: none; opacity: 0.7; }
+}
 .headshot-wrap { width: 140px; height: 140px; border-radius: 50%; margin: 0 auto 2.5rem; position: relative; }
 .headshot-ring {
   position: absolute; inset: -3px; border-radius: 50%; border: 1.5px solid var(--border);
@@ -926,6 +986,10 @@ footer .signature.signed svg text {
       <span>Send a Gift</span>
     </a>
   </div>
+  <div class="scroll-hint" id="scrollHint" aria-hidden="true">
+    <div class="scroll-label">Scroll · The Journey</div>
+    <div class="scroll-track"></div>
+  </div>
 </section>
 <div class="section-divider"></div>
 <section class="interests page-section">
@@ -1253,6 +1317,24 @@ document.querySelectorAll('.page-section, .section-divider').forEach(el => secti
   }, { threshold: 0.6 });
   sigObs.observe(sigBlock);
 })();
+// Hero scroll-down hint — appears after a few seconds, fades on first scroll
+(function() {
+  const hint = document.getElementById('scrollHint');
+  if (!hint) return;
+  let dismissed = false;
+  // If user has already scrolled (e.g. refreshed mid-page), don't show
+  if (window.scrollY > 50) { dismissed = true; return; }
+  setTimeout(() => {
+    if (!dismissed) hint.classList.add('visible');
+  }, 3000);
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 30 && !dismissed) {
+      dismissed = true;
+      hint.classList.add('dismissed');
+    }
+  }, { passive: true });
+})();
+
 // Topographic side art — generate paths and morph with scroll
 (function() {
   const topoLines = document.querySelectorAll('.topo-line');
