@@ -491,8 +491,13 @@ nav .venmo-nav:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--a
 }
 @media (min-width: 701px) and (max-width: 1000px) { .flip-cards { grid-template-columns: repeat(2, 1fr); } }
 /* ============ THANK YOU ============ */
-.thanks { padding: 6rem 2rem 4rem; }
-.thanks-inner { max-width: 680px; margin: 0 auto; text-align: center; }
+.thanks { position: relative; height: 220vh; padding: 0; }
+.thanks-sticky {
+  position: sticky; top: 0; height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 4rem 2rem;
+}
+.thanks-inner { max-width: 680px; margin: 0 auto; text-align: center; width: 100%; }
 .thanks .tag { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
 .thanks h2 {
   font-family: 'Instrument Serif', serif;
@@ -575,7 +580,8 @@ nav .venmo-nav:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--a
   50%      { transform: scale(1.12); }
 }
 @media (max-width: 600px) {
-  .thanks { padding: 4rem 1.5rem 3rem; }
+  .thanks { height: 240vh; padding: 0; }
+  .thanks-sticky { padding: 3rem 1.5rem; }
   .thanks h2 { font-size: 1.9rem; }
   .thanks .thanks-body { font-size: 0.98rem; line-height: 1.7; }
   .thanks .thanks-quote { font-size: 1.1rem; }
@@ -962,6 +968,7 @@ footer .signature.signed svg text {
 </section>
 <div class="section-divider"></div>
 <section class="thanks page-section" id="thanks">
+  <div class="thanks-sticky">
   <div class="thanks-inner">
     <div class="tag reveal">Gratitude</div>
     <h2 class="reveal">Thank you.</h2>
@@ -972,6 +979,7 @@ footer .signature.signed svg text {
     <svg class="heart reveal" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M12 21s-7-4.35-9.5-8.5C.5 9 2 5 6 5c2 0 3.5 1 4 2 .5-1 2-2 4-2 4 0 5.5 4 3.5 7.5C19 16.65 12 21 12 21z"/>
     </svg>
+  </div>
   </div>
 </section>
 <div class="section-divider"></div>
@@ -1091,12 +1099,14 @@ document.querySelectorAll('.page-section, .section-divider').forEach(el => secti
   let lastCaret = -1;
   function updateThanks() {
     const rect = thanksSection.getBoundingClientRect();
-    const vh = window.innerHeight;
-    // Progress window — gives plenty of scroll room for typing feel
-    const start = vh * 0.9;
-    const end   = vh * 0.1;
-    const raw = (start - rect.top) / (start - end);
-    const progress = Math.max(0, Math.min(1, raw));
+    // Sticky scroll progress through the tall section
+    const scrolled = -rect.top;
+    const usable = Math.max(1, thanksSection.offsetHeight - window.innerHeight);
+    const raw = scrolled / usable;
+    // Compress active typing into the middle 80% of the scroll, so the
+    // start gives a settled "ready to read" beat and the end gives a
+    // brief pause before the section unsticks.
+    const progress = Math.max(0, Math.min(1, (raw - 0.08) / 0.84));
 
     const total = chars.length;
     const litCount = Math.round(progress * total);
