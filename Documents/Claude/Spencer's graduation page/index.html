@@ -611,6 +611,39 @@ nav .venmo-nav:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--a
 .venmo-btn { display: inline-flex; align-items: center; gap: 0.6rem; background: var(--bg-elevated); color: var(--text); text-decoration: none; padding: 0.9rem 2rem; border-radius: 12px; border: 1px solid var(--border); font-size: 0.9rem; font-weight: 600; font-family: 'Inter', sans-serif; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 .venmo-btn:hover { border-color: var(--accent); box-shadow: 0 0 30px var(--accent-glow); transform: translateY(-2px); }
 .venmo-btn svg { width: 20px; height: 20px; color: #3d95ce; }
+.phone-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  background: var(--bg-elevated);
+  color: var(--text);
+  text-decoration: none;
+  padding: 1rem 2rem;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  font-size: 1.05rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.01em;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-bottom: 0.85rem;
+  position: relative;
+}
+.phone-btn:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 30px var(--accent-glow);
+  transform: translateY(-2px);
+}
+.phone-btn svg { width: 18px; height: 18px; color: var(--accent); }
+.congrats .phone-sub {
+  color: var(--text-tertiary);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0;
+}
+@media (max-width: 600px) {
+  .phone-btn { font-size: 1rem; padding: 0.9rem 1.5rem; }
+}
 footer { text-align: center; padding: 3rem 2rem 2.5rem; border-top: 1px solid var(--border); }
 footer .signature {
   display: inline-block;
@@ -770,9 +803,6 @@ footer .signature.signed svg text {
   .sem-year { font-size: 0.62rem; }
 }
 </style>
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 <div class="topo-side left" id="topoLeft" aria-hidden="true">
@@ -985,22 +1015,17 @@ footer .signature.signed svg text {
 <div class="section-divider"></div>
 <section class="congrats page-section" id="congrats">
   <div class="congrats-inner">
-    <div class="tag reveal">Leave a note</div>
+    <div class="tag reveal">Say hi</div>
     <h2 class="reveal">Say congrats.</h2>
-    <p class="sub reveal">Drop a message, share a memory, or just say what’s up.</p>
-    <a href="https://venmo.com/u/Spencer-Browning-2" target="_blank" rel="noopener" class="venmo-btn ripple-btn reveal" style="margin-bottom:2.5rem;">
+    <p class="sub reveal">Send a message, share a memory, or just say what’s up!</p>
+    <a href="sms:+18018425348" class="phone-btn ripple-btn reveal">
       <div class="cursor-glow"></div>
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.27 3c.76 1.25 1.1 2.54 1.1 4.17 0 5.19-4.43 11.93-8.03 16.66H5.23L2.63 3.84l6.01-.57 1.46 11.72c1.36-2.22 3.05-5.71 3.05-8.1 0-1.54-.26-2.59-.71-3.45L19.27 3z"/></svg>
-      <span>Send a Graduation Gift</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/>
+      </svg>
+      <span>801-842-5348</span>
     </a>
-    <div class="comment-form reveal">
-      <div class="form-row">
-        <input type="text" id="commenterName" placeholder="Your name" maxlength="50">
-      </div>
-      <textarea id="commentText" placeholder="Write your message..." maxlength="500"></textarea>
-      <button class="submit-btn ripple-btn" onclick="addComment()"><div class="cursor-glow"></div><span>Send</span></button>
-    </div>
-    <div class="comments-list" id="commentsList"></div>
+    <p class="phone-sub reveal">Tap to text — I’d love to hear from you.</p>
   </div>
 </section>
 <div class="section-divider"></div>
@@ -1358,52 +1383,7 @@ window.addEventListener('scroll', () => {
     ticking = true;
   }
 });
-// ============ FIREBASE COMMENTS ============
-const firebaseConfig = {
-  apiKey: "PASTE_YOUR_API_KEY",
-  authDomain: "PASTE_YOUR_AUTH_DOMAIN",
-  projectId: "PASTE_YOUR_PROJECT_ID",
-  storageBucket: "PASTE_YOUR_STORAGE_BUCKET",
-  messagingSenderId: "PASTE_YOUR_SENDER_ID",
-  appId: "PASTE_YOUR_APP_ID"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const commentsRef = db.collection('comments');
-
-function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-
-// Real-time listener — updates for all visitors instantly
-commentsRef.orderBy('timestamp', 'desc').onSnapshot(snapshot => {
-  const list = document.getElementById('commentsList');
-  list.innerHTML = '';
-  snapshot.forEach(doc => {
-    const c = doc.data();
-    const div = document.createElement('div');
-    div.className = 'comment-bubble';
-    div.innerHTML = '<div class="c-name">' + esc(c.name) + '</div><div class="c-text">' + esc(c.text) + '</div><div class="c-time">' + esc(c.time) + '</div>';
-    list.appendChild(div);
-  });
-});
-
-function addComment() {
-  const n = document.getElementById('commenterName');
-  const t = document.getElementById('commentText');
-  if (!n.value.trim() || !t.value.trim()) return;
-  const d = new Date();
-  const mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const btn = document.querySelector('.submit-btn span');
-  btn.textContent = 'Sending...';
-  commentsRef.add({
-    name: n.value.trim(),
-    text: t.value.trim(),
-    time: mo[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear(),
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-  }).then(() => {
-    n.value = ''; t.value = '';
-    btn.textContent = 'Send';
-  }).catch(() => { btn.textContent = 'Send'; });
-}
+// (Comments / Firebase removed — Say Congrats now uses a phone number CTA)
 const navEl = document.querySelector('nav');
 window.addEventListener('scroll', () => {
   navEl.classList.toggle('scrolled', window.scrollY > 80);
